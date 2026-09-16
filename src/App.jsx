@@ -1,104 +1,241 @@
 import { useMemo, useState } from "react";
 import "./App.css";
 
+const today = new Date().toISOString().split("T")[0];
+
+const categories = [
+  "Barchasi",
+  "Milliy taomlar",
+  "Kaboblar",
+  "Salatlar",
+];
+
 const menuItems = [
-  ["Milliy palov", "Milliy taomlar", 50000, "An’anaviy usulda tayyorlangan xushbo‘y palov.", "🍛"],
-  ["Maxsus kabob", "Kaboblar", 70000, "Ko‘mirda pishirilgan shirali go‘sht.", "🍢"],
-  ["Sezar salati", "Salatlar", 35000, "Yangi sabzavotlar va maxsus sous.", "🥗"],
-  ["Lag‘mon", "Milliy taomlar", 45000, "Uy usulida tayyorlangan mazali lag‘mon.", "🍜"],
-  ["Toshkent shashligi", "Kaboblar", 65000, "Yumshoq go‘sht va maxsus ziravorlar.", "🥩"],
-  ["Achichuk salati", "Salatlar", 25000, "Pomidor, piyoz va yangi ko‘katlar.", "🥒"],
-  ["Mastava", "Milliy taomlar", 30000, "Issiq va mazali milliy sho‘rva.", "🍲"],
-  ["Qanotcha", "Kaboblar", 55000, "Maxsus sousda tayyorlangan tovuq qanotlari.", "🍗"],
-].map(([name, category, price, description, emoji], index) => ({
-  id: index + 1,
-  name,
-  category,
-  price,
-  description,
-  emoji,
-}));
+  {
+    id: 1,
+    name: "Milliy palov",
+    category: "Milliy taomlar",
+    price: 50000,
+    description: "An’anaviy usulda tayyorlangan xushbo‘y palov.",
+    emoji: "🍛",
+  },
+  {
+    id: 2,
+    name: "Maxsus kabob",
+    category: "Kaboblar",
+    price: 70000,
+    description: "Ko‘mirda pishirilgan shirali go‘sht.",
+    emoji: "🍢",
+  },
+  {
+    id: 3,
+    name: "Sezar salati",
+    category: "Salatlar",
+    price: 35000,
+    description: "Yangi sabzavotlar va maxsus sous.",
+    emoji: "🥗",
+  },
+  {
+    id: 4,
+    name: "Lag‘mon",
+    category: "Milliy taomlar",
+    price: 45000,
+    description: "Uy usulida tayyorlangan mazali lag‘mon.",
+    emoji: "🍜",
+  },
+  {
+    id: 5,
+    name: "Toshkent shashligi",
+    category: "Kaboblar",
+    price: 65000,
+    description: "Yumshoq go‘sht va maxsus ziravorlar.",
+    emoji: "🥩",
+  },
+  {
+    id: 6,
+    name: "Achichuk salati",
+    category: "Salatlar",
+    price: 25000,
+    description: "Pomidor, piyoz va yangi ko‘katlar.",
+    emoji: "🥒",
+  },
+  {
+    id: 7,
+    name: "Mastava",
+    category: "Milliy taomlar",
+    price: 30000,
+    description: "Issiq va mazali milliy sho‘rva.",
+    emoji: "🍲",
+  },
+  {
+    id: 8,
+    name: "Qanotcha",
+    category: "Kaboblar",
+    price: 55000,
+    description: "Maxsus sousda tayyorlangan tovuq qanotlari.",
+    emoji: "🍗",
+  },
+];
 
 const tables = [
-  ["Oddiy", 2, "left"],
-  ["Oilaviy", 6, "center"],
-  ["VIP", 8, "right"],
-  ["Oilaviy", 6, "left"],
-  ["Oddiy", 2, "center"],
-  ["Premium", 10, "right"],
-  ["Oilaviy", 8, "left"],
-  ["Oddiy", 4, "center"],
-  ["VIP", 12, "right"],
-  ["Premium", 10, "left"],
-  ["Oddiy", 4, "center"],
-  ["Premium", 10, "right"],
-].map(([type, capacity, position], index) => ({
-  id: index + 1,
-  name: `Stol ${index + 1}`,
-  type,
-  capacity,
-  position,
-  status: [2, 5, 9].includes(index + 1) ? "reserved" : "available",
-}));
+  {
+    id: 1,
+    name: "Stol 1",
+    type: "Oddiy",
+    capacity: 2,
+    status: "available",
+  },
+  {
+    id: 2,
+    name: "Stol 2",
+    type: "Oilaviy",
+    capacity: 6,
+    status: "reserved",
+  },
+  {
+    id: 3,
+    name: "Stol 3",
+    type: "VIP",
+    capacity: 8,
+    status: "available",
+  },
+  {
+    id: 4,
+    name: "Stol 4",
+    type: "Oilaviy",
+    capacity: 6,
+    status: "available",
+  },
+  {
+    id: 5,
+    name: "Stol 5",
+    type: "Oddiy",
+    capacity: 2,
+    status: "reserved",
+  },
+  {
+    id: 6,
+    name: "Stol 6",
+    type: "Premium",
+    capacity: 10,
+    status: "available",
+  },
+  {
+    id: 7,
+    name: "Stol 7",
+    type: "Oilaviy",
+    capacity: 8,
+    status: "available",
+  },
+  {
+    id: 8,
+    name: "Stol 8",
+    type: "Oddiy",
+    capacity: 4,
+    status: "available",
+  },
+  {
+    id: 9,
+    name: "Stol 9",
+    type: "VIP",
+    capacity: 12,
+    status: "reserved",
+  },
+  {
+    id: 10,
+    name: "Stol 10",
+    type: "Premium",
+    capacity: 10,
+    status: "available",
+  },
+  {
+    id: 11,
+    name: "Stol 11",
+    type: "Oddiy",
+    capacity: 4,
+    status: "available",
+  },
+  {
+    id: 12,
+    name: "Stol 12",
+    type: "Premium",
+    capacity: 10,
+    status: "available",
+  },
+];
 
-const categories = ["Barchasi", "Milliy taomlar", "Kaboblar", "Salatlar"];
-const today = new Date().toISOString().split("T")[0];
-const emptyBooking = { name: "", phone: "", date: "", time: "", comment: "" };
+const initialBooking = {
+  name: "",
+  phone: "",
+  date: "",
+  time: "",
+  comment: "",
+};
+
+function formatPrice(price) {
+  return new Intl.NumberFormat("uz-UZ").format(price);
+}
 
 export default function App() {
   const [category, setCategory] = useState("Barchasi");
+
   const [bookingOpen, setBookingOpen] = useState(false);
   const [step, setStep] = useState(1);
+
   const [selectedTable, setSelectedTable] = useState(null);
   const [guestCount, setGuestCount] = useState("Barcha sig‘imlar");
   const [tableType, setTableType] = useState("Barchasi");
-  const [booking, setBooking] = useState(emptyBooking);
-  const [success, setSuccess] = useState(false);
 
-  const filteredItems = useMemo(
-    () =>
-      category === "Barchasi"
-        ? menuItems
-        : menuItems.filter((item) => item.category === category),
-    [category]
-  );
+  const [booking, setBooking] = useState(initialBooking);
 
-  const filteredTables = useMemo(
-    () =>
-      tables.filter((table) => {
-        const capacityMatch =
-          guestCount === "Barcha sig‘imlar" ||
-          table.capacity >= Number(guestCount);
+  const filteredMenu = useMemo(() => {
+    if (category === "Barchasi") {
+      return menuItems;
+    }
 
-        const typeMatch =
-          tableType === "Barchasi" || table.type === tableType;
+    return menuItems.filter(
+      (item) => item.category === category
+    );
+  }, [category]);
 
-        return capacityMatch && typeMatch;
-      }),
-    [guestCount, tableType]
-  );
+  const filteredTables = useMemo(() => {
+    return tables.filter((table) => {
+      const capacityMatch =
+        guestCount === "Barcha sig‘imlar" ||
+        table.capacity >= Number(guestCount);
 
-  const openBooking = () => {
+      const typeMatch =
+        tableType === "Barchasi" ||
+        table.type === tableType;
+
+      return capacityMatch && typeMatch;
+    });
+  }, [guestCount, tableType]);
+
+  function openBooking() {
     setBookingOpen(true);
     setStep(1);
-    setSuccess(false);
-  };
+  }
 
-  const closeBooking = () => {
+  function closeBooking() {
     setBookingOpen(false);
-    setSelectedTable(null);
     setStep(1);
-    setSuccess(false);
+    setSelectedTable(null);
     setGuestCount("Barcha sig‘imlar");
     setTableType("Barchasi");
-    setBooking(emptyBooking);
-  };
+    setBooking(initialBooking);
+  }
 
-  const changeBooking = ({ target: { name, value } }) => {
-    setBooking((old) => ({ ...old, [name]: value }));
-  };
+  function changeBooking(event) {
+    const { name, value } = event.target;
 
-  const submitBooking = (event) => {
+    setBooking((oldBooking) => ({
+      ...oldBooking,
+      [name]: value,
+    }));
+  }
+
+  function submitBooking(event) {
     event.preventDefault();
 
     if (!selectedTable) {
@@ -106,39 +243,94 @@ export default function App() {
       return;
     }
 
-    if (!booking.name || !booking.phone || !booking.date || !booking.time) {
+    if (
+      !booking.name.trim() ||
+      !booking.phone.trim() ||
+      !booking.date ||
+      !booking.time
+    ) {
       alert("Iltimos, barcha majburiy maydonlarni to‘ldiring.");
       return;
     }
 
     if (booking.date < today) {
-      alert("Iltimos, bugungi yoki kelajakdagi sanani tanlang.");
+      alert("O‘tgan sanani tanlash mumkin emas.");
       return;
     }
 
     const orderData = {
-      name: booking.name,
-      phone: booking.phone,
+      name: booking.name.trim(),
+      phone: booking.phone.trim(),
       date: booking.date,
       time: booking.time,
-      comment: booking.comment,
+      comment: booking.comment.trim(),
       table: selectedTable.name,
       tableType: selectedTable.type,
       capacity: selectedTable.capacity,
+      source: "telegram_web_app",
+      createdAt: new Date().toISOString(),
     };
+
+    console.log("Yuborilayotgan bron ma’lumotlari:", orderData);
 
     const telegram = window.Telegram?.WebApp;
 
-    if (telegram) {
-      telegram.ready();
-      telegram.sendData(JSON.stringify(orderData));
-      telegram.close();
+    if (!telegram) {
+      alert(
+        "Sayt Telegram WebApp orqali ochilmagan. " +
+          "Telegram bot ichidagi «🍽 Restoranni ochish» tugmasini bosing."
+      );
+
+      console.error(
+        "window.Telegram.WebApp topilmadi."
+      );
+
       return;
     }
 
-    setSuccess(true);
-    setStep(3);
-  };
+    if (typeof telegram.sendData !== "function") {
+      alert(
+        "Telegram ma’lumot yuborish funksiyasi topilmadi."
+      );
+
+      console.error(
+        "telegram.sendData mavjud emas:",
+        telegram
+      );
+
+      return;
+    }
+
+    try {
+      telegram.ready();
+      telegram.expand();
+
+      const jsonData = JSON.stringify(orderData);
+
+      console.log(
+        "Telegramga yuborilayotgan JSON:",
+        jsonData
+      );
+
+      telegram.sendData(jsonData);
+
+      /*
+        sendData() muvaffaqiyatli chaqirilgandan keyin
+        Telegram WebApp yopiladi.
+        Bot foydalanuvchining chatiga javob yuboradi.
+      */
+      telegram.close();
+    } catch (error) {
+      console.error(
+        "Telegramga ma’lumot yuborishda xatolik:",
+        error
+      );
+
+      alert(
+        "Bron ma’lumotlari yuborilmadi. Qaytadan urinib ko‘ring."
+      );
+    }
+  }
 
   return (
     <div className="app">
@@ -155,7 +347,10 @@ export default function App() {
             <a href="#contact">Aloqa</a>
           </nav>
 
-          <button className="header-button" onClick={openBooking}>
+          <button
+            className="header-button"
+            onClick={openBooking}
+          >
             Joy bron qilish
           </button>
         </div>
@@ -165,21 +360,31 @@ export default function App() {
         <section className="hero" id="home">
           <div className="hero-overlay">
             <div className="container hero-content">
-              <p className="eyebrow">RESTAURANT EXPERIENCE</p>
+              <p className="eyebrow">
+                RESTAURANT EXPERIENCE
+              </p>
+
               <h1>
                 Mazali taomlar,
                 <br />
                 <span>yoqimli lahzalar</span>
               </h1>
+
               <p className="hero-text">
-                Milliy va zamonaviy taomlarning o‘ziga xos uyg‘unligi.
-                Har bir mehmonimiz uchun unutilmas ta’m va qulay muhit.
+                Milliy va zamonaviy taomlarning o‘ziga xos
+                uyg‘unligi. Har bir mehmonimiz uchun
+                unutilmas ta’m va qulay muhit.
               </p>
+
               <div className="hero-actions">
                 <a href="#menu" className="primary-button">
                   Menyuni ko‘rish
                 </a>
-                <button className="secondary-button" onClick={openBooking}>
+
+                <button
+                  className="secondary-button"
+                  onClick={openBooking}
+                >
                   Joy bron qilish
                 </button>
               </div>
@@ -191,15 +396,18 @@ export default function App() {
           <div className="container about-grid">
             <div>
               <p className="eyebrow">BIZ HAQIMIZDA</p>
+
               <h2>
                 Har bir taomda
                 <br />
                 <span>mehr va sifat</span>
               </h2>
+
               <p className="section-text">
-                Restaurant — mazali taomlar, qulay muhit va samimiy xizmat
-                uyg‘unlashgan zamonaviy restoran platformasi.
+                Restaurant — mazali taomlar, qulay muhit
+                va samimiy xizmat uyg‘unlashgan restoran.
               </p>
+
               <a href="#contact" className="text-link">
                 Biz bilan bog‘lanish →
               </a>
@@ -207,10 +415,12 @@ export default function App() {
 
             <div className="about-card">
               <div className="about-card-icon">✦</div>
+
               <h3>Yuqori sifat</h3>
+
               <p>
-                Faqat yangi va sifatli mahsulotlardan foydalanishga e’tibor
-                qaratamiz.
+                Faqat yangi va sifatli mahsulotlardan
+                foydalanishga e’tibor qaratamiz.
               </p>
             </div>
           </div>
@@ -220,9 +430,11 @@ export default function App() {
           <div className="container">
             <div className="section-heading">
               <p className="eyebrow">MAZALI TANLOV</p>
+
               <h2>
                 Bizning <span>menyu</span>
               </h2>
+
               <p className="section-text">
                 O‘zingizga yoqqan taomni tanlang.
               </p>
@@ -232,7 +444,9 @@ export default function App() {
               {categories.map((item) => (
                 <button
                   key={item}
-                  className={category === item ? "active" : ""}
+                  className={
+                    category === item ? "active" : ""
+                  }
                   onClick={() => setCategory(item)}
                 >
                   {item}
@@ -241,15 +455,26 @@ export default function App() {
             </div>
 
             <div className="menu-grid">
-              {filteredItems.map((item) => (
-                <article className="menu-card" key={item.id}>
-                  <div className="food-image">{item.emoji}</div>
+              {filteredMenu.map((item) => (
+                <article
+                  className="menu-card"
+                  key={item.id}
+                >
+                  <div className="food-image">
+                    {item.emoji}
+                  </div>
+
                   <div className="menu-card-content">
-                    <p className="food-category">{item.category}</p>
+                    <p className="food-category">
+                      {item.category}
+                    </p>
+
                     <h3>{item.name}</h3>
+
                     <p>{item.description}</p>
+
                     <strong className="food-price">
-                      {new Intl.NumberFormat("uz-UZ").format(item.price)} so‘m
+                      {formatPrice(item.price)} so‘m
                     </strong>
                   </div>
                 </article>
@@ -261,18 +486,26 @@ export default function App() {
         <section className="booking-section section">
           <div className="container booking-banner">
             <div>
-              <p className="eyebrow">OLDINDAN JOY TANLANG</p>
+              <p className="eyebrow">
+                OLDINDAN JOY TANLANG
+              </p>
+
               <h2>
                 Restoranda o‘zingizga
                 <br />
                 <span>mos joyni band qiling</span>
               </h2>
+
               <p>
-                Oddiy, oilaviy, VIP va Premium joylardan birini tanlang.
+                Oddiy, oilaviy, VIP va Premium joylardan
+                birini tanlang.
               </p>
             </div>
 
-            <button className="primary-button" onClick={openBooking}>
+            <button
+              className="primary-button"
+              onClick={openBooking}
+            >
               Restoran xaritasini ochish
             </button>
           </div>
@@ -282,10 +515,12 @@ export default function App() {
           <div className="container contact-box">
             <div>
               <p className="eyebrow">ALOQA</p>
+
               <h2>Biz sizni kutamiz</h2>
+
               <p>
-                Mazali taomlar va yoqimli muhit uchun restoranimizga tashrif
-                buyuring.
+                Mazali taomlar va yoqimli muhit uchun
+                restoranimizga tashrif buyuring.
               </p>
             </div>
 
@@ -300,37 +535,62 @@ export default function App() {
 
       <footer className="footer">
         <div className="container">
-          <p>© 2026 Restaurant. Barcha huquqlar himoyalangan.</p>
+          <p>
+            © 2026 Restaurant. Barcha huquqlar himoyalangan.
+          </p>
         </div>
       </footer>
 
       {bookingOpen && (
-        <div className="modal-overlay" onClick={closeBooking}>
+        <div
+          className="modal-overlay"
+          onClick={closeBooking}
+        >
           <div
             className="booking-modal"
-            onClick={(event) => event.stopPropagation()}
+            onClick={(event) =>
+              event.stopPropagation()
+            }
           >
-            <button className="modal-close" onClick={closeBooking}>
+            <button
+              className="modal-close"
+              onClick={closeBooking}
+            >
               ×
             </button>
 
             <div className="booking-steps">
-              <span className={step >= 1 ? "active" : ""}>1. Stol</span>
-              <span className={step >= 2 ? "active" : ""}>2. Ma’lumot</span>
-              <span className={step >= 3 ? "active" : ""}>3. Yakun</span>
+              <span className={step >= 1 ? "active" : ""}>
+                1. Stol
+              </span>
+
+              <span className={step >= 2 ? "active" : ""}>
+                2. Ma’lumot
+              </span>
+
+              <span className={step >= 3 ? "active" : ""}>
+                3. Yakun
+              </span>
             </div>
 
             {step === 1 && (
               <>
                 <div className="modal-heading">
-                  <p className="eyebrow">JOY TANLASH</p>
+                  <p className="eyebrow">
+                    JOY TANLASH
+                  </p>
+
                   <h2>Restoran xaritasi</h2>
-                  <p>O‘zingizga mos joyni filtr orqali tanlang.</p>
+
+                  <p>
+                    O‘zingizga mos joyni tanlang.
+                  </p>
                 </div>
 
                 <div className="booking-filters">
                   <label>
                     Mehmonlar soni
+
                     <select
                       value={guestCount}
                       onChange={(event) => {
@@ -341,8 +601,24 @@ export default function App() {
                       <option value="Barcha sig‘imlar">
                         Barcha sig‘imlar
                       </option>
-                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12].map((count) => (
-                        <option value={count} key={count}>
+
+                      {[
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        7,
+                        8,
+                        9,
+                        10,
+                        12,
+                      ].map((count) => (
+                        <option
+                          value={count}
+                          key={count}
+                        >
                           {count} kishilik
                         </option>
                       ))}
@@ -351,6 +627,7 @@ export default function App() {
 
                   <label>
                     Joy turi
+
                     <select
                       value={tableType}
                       onChange={(event) => {
@@ -358,11 +635,17 @@ export default function App() {
                         setSelectedTable(null);
                       }}
                     >
-                      {["Barchasi", "Oddiy", "Oilaviy", "VIP", "Premium"].map(
-                        (type) => (
-                          <option key={type}>{type}</option>
-                        )
-                      )}
+                      {[
+                        "Barchasi",
+                        "Oddiy",
+                        "Oilaviy",
+                        "VIP",
+                        "Premium",
+                      ].map((type) => (
+                        <option key={type} value={type}>
+                          {type}
+                        </option>
+                      ))}
                     </select>
                   </label>
                 </div>
@@ -374,48 +657,75 @@ export default function App() {
                 </div>
 
                 <div className="restaurant-map">
-                  <div className="entrance">KIRISH</div>
+                  <div className="entrance">
+                    KIRISH
+                  </div>
 
                   <div className="tables-grid">
-                    {filteredTables.map((table) => (
-                      <button
-                        key={table.id}
-                        disabled={table.status === "reserved"}
-                        className={`table-card ${
-                          table.status === "reserved" ? "reserved" : ""
-                        } ${
-                          selectedTable?.id === table.id ? "selected" : ""
-                        }`}
-                        onClick={() => setSelectedTable(table)}
-                      >
-                        <strong>{table.name}</strong>
-                        <small>{table.type} joy</small>
-                        <small>{table.capacity} kishilik</small>
-                        <b>
-                          {table.status === "reserved"
-                            ? "Band"
-                            : selectedTable?.id === table.id
-                            ? "Tanlandi"
-                            : "Bo‘sh"}
-                        </b>
-                      </button>
-                    ))}
+                    {filteredTables.map((table) => {
+                      const isReserved =
+                        table.status === "reserved";
+
+                      const isSelected =
+                        selectedTable?.id === table.id;
+
+                      return (
+                        <button
+                          key={table.id}
+                          type="button"
+                          disabled={isReserved}
+                          className={`table-card ${
+                            isReserved ? "reserved" : ""
+                          } ${
+                            isSelected ? "selected" : ""
+                          }`}
+                          onClick={() =>
+                            setSelectedTable(table)
+                          }
+                        >
+                          <strong>{table.name}</strong>
+
+                          <small>
+                            {table.type} joy
+                          </small>
+
+                          <small>
+                            {table.capacity} kishilik
+                          </small>
+
+                          <b>
+                            {isReserved
+                              ? "Band"
+                              : isSelected
+                              ? "Tanlandi"
+                              : "Bo‘sh"}
+                          </b>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
                 {selectedTable && (
                   <div className="selected-table-info">
                     <h3>{selectedTable.name}</h3>
+
                     <p>
-                      Joy turi: <strong>{selectedTable.type}</strong>
+                      Joy turi:{" "}
+                      <strong>
+                        {selectedTable.type}
+                      </strong>
                     </p>
+
                     <p>
-                      Sig‘imi: <strong>{selectedTable.capacity} kishi</strong>
+                      Sig‘imi:{" "}
+                      <strong>
+                        {selectedTable.capacity} kishi
+                      </strong>
                     </p>
-                    <p className="booking-price">
-                      Bron qilish to‘lovi: <strong>20,000 so‘m</strong>
-                    </p>
+
                     <button
+                      type="button"
                       className="primary-button"
                       onClick={() => setStep(2)}
                     >
@@ -427,19 +737,31 @@ export default function App() {
             )}
 
             {step === 2 && (
-              <form className="booking-form" onSubmit={submitBooking}>
+              <form
+                className="booking-form"
+                onSubmit={submitBooking}
+              >
                 <div className="modal-heading">
-                  <p className="eyebrow">MA’LUMOTLAR</p>
+                  <p className="eyebrow">
+                    MA’LUMOTLAR
+                  </p>
+
                   <h2>Bron qilish</h2>
+
                   <p>
-                    Tanlangan joy: <strong>{selectedTable?.name}</strong>
+                    Tanlangan joy:{" "}
+                    <strong>
+                      {selectedTable?.name}
+                    </strong>
                   </p>
                 </div>
 
                 <label>
                   Ismingiz *
+
                   <input
                     required
+                    type="text"
                     name="name"
                     value={booking.name}
                     onChange={changeBooking}
@@ -449,8 +771,10 @@ export default function App() {
 
                 <label>
                   Telefon raqamingiz *
+
                   <input
                     required
+                    type="tel"
                     name="phone"
                     value={booking.phone}
                     onChange={changeBooking}
@@ -461,6 +785,7 @@ export default function App() {
                 <div className="form-row">
                   <label>
                     Sana *
+
                     <input
                       required
                       min={today}
@@ -473,6 +798,7 @@ export default function App() {
 
                   <label>
                     Vaqt *
+
                     <input
                       required
                       type="time"
@@ -485,6 +811,7 @@ export default function App() {
 
                 <label>
                   Qo‘shimcha izoh
+
                   <textarea
                     name="comment"
                     value={booking.comment}
@@ -501,33 +828,32 @@ export default function App() {
                   >
                     Ortga
                   </button>
-                  <button className="primary-button">Bronni tasdiqlash</button>
+
+                  <button
+                    type="submit"
+                    className="primary-button"
+                  >
+                    Bronni tasdiqlash
+                  </button>
                 </div>
               </form>
             )}
 
-            {step === 3 && success && (
+            {step === 3 && (
               <div className="success-screen">
                 <div className="success-icon">✓</div>
+
                 <h2>Bron so‘rovi tayyor!</h2>
+
                 <p>
-                  {selectedTable?.name} uchun bron ma’lumotlaringiz qabul
-                  qilindi.
+                  Bron ma’lumotlaringiz qabul qilindi.
                 </p>
 
-                <div className="success-details">
-                  <p><strong>Ism:</strong> {booking.name}</p>
-                  <p><strong>Telefon:</strong> {booking.phone}</p>
-                  <p><strong>Sana:</strong> {booking.date}</p>
-                  <p><strong>Vaqt:</strong> {booking.time}</p>
-                </div>
-
-                <p className="demo-warning">
-                  Bu hozircha demo rejim. API ulangandan keyin ma’lumotlar
-                  administratorga yuboriladi.
-                </p>
-
-                <button className="primary-button" onClick={closeBooking}>
+                <button
+                  type="button"
+                  className="primary-button"
+                  onClick={closeBooking}
+                >
                   Yopish
                 </button>
               </div>

@@ -1,339 +1,234 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import "./App.css";
 
 const menuItems = [
-  {
-    id: 1,
-    name: "Milliy palov",
-    category: "Milliy taomlar",
-    price: 50000,
-    description: "An’anaviy o‘zbek palovi, sabzi va mayiz bilan",
-    emoji: "🍛",
-  },
-  {
-    id: 2,
-    name: "Navbahor kabobi",
-    category: "Kaboblar",
-    price: 70000,
-    description: "Ko‘mirda pishirilgan shirali go‘sht",
-    emoji: "🍢",
-  },
-  {
-    id: 3,
-    name: "Sezar salati",
-    category: "Salatlar",
-    price: 35000,
-    description: "Yangi sabzavotlar va maxsus sous bilan",
-    emoji: "🥗",
-  },
-  {
-    id: 4,
-    name: "Lag‘mon",
-    category: "Milliy taomlar",
-    price: 45000,
-    description: "Uy usulida tayyorlangan mazali lag‘mon",
-    emoji: "🍜",
-  },
-  {
-    id: 5,
-    name: "Toshkent shashligi",
-    category: "Kaboblar",
-    price: 65000,
-    description: "Ko‘mirda pishirilgan shirali shashlik",
-    emoji: "🥩",
-  },
-  {
-    id: 6,
-    name: "Achichuk salati",
-    category: "Salatlar",
-    price: 25000,
-    description: "Pomidor, piyoz va ko‘katlardan tayyorlanadi",
-    emoji: "🥒",
-  },
-];
+  ["Milliy palov", "Milliy taomlar", 50000, "An’anaviy usulda tayyorlangan xushbo‘y palov.", "🍛"],
+  ["Maxsus kabob", "Kaboblar", 70000, "Ko‘mirda pishirilgan shirali go‘sht.", "🍢"],
+  ["Sezar salati", "Salatlar", 35000, "Yangi sabzavotlar va maxsus sous.", "🥗"],
+  ["Lag‘mon", "Milliy taomlar", 45000, "Uy usulida tayyorlangan mazali lag‘mon.", "🍜"],
+  ["Toshkent shashligi", "Kaboblar", 65000, "Yumshoq go‘sht va maxsus ziravorlar.", "🥩"],
+  ["Achichuk salati", "Salatlar", 25000, "Pomidor, piyoz va yangi ko‘katlar.", "🥒"],
+  ["Mastava", "Milliy taomlar", 30000, "Issiq va mazali milliy sho‘rva.", "🍲"],
+  ["Qanotcha", "Kaboblar", 55000, "Maxsus sousda tayyorlangan tovuq qanotlari.", "🍗"],
+].map(([name, category, price, description, emoji], index) => ({
+  id: index + 1,
+  name,
+  category,
+  price,
+  description,
+  emoji,
+}));
 
 const tables = [
-  {
-    id: 1,
-    name: "Stol 1",
-    type: "Oddiy",
-    capacity: 2,
-    status: "available",
-    price: 20000,
-  },
-  {
-    id: 2,
-    name: "Stol 2",
-    type: "Oilaviy",
-    capacity: 6,
-    status: "reserved",
-    price: 60000,
-  },
-  {
-    id: 3,
-    name: "Stol 3",
-    type: "VIP",
-    capacity: 8,
-    status: "available",
-    price: 120000,
-  },
-  {
-    id: 4,
-    name: "Stol 4",
-    type: "Oilaviy",
-    capacity: 6,
-    status: "available",
-    price: 60000,
-  },
-  {
-    id: 5,
-    name: "Stol 5",
-    type: "Oddiy",
-    capacity: 2,
-    status: "reserved",
-    price: 20000,
-  },
-  {
-    id: 6,
-    name: "Stol 6",
-    type: "Premium",
-    capacity: 10,
-    status: "available",
-    price: 180000,
-  },
-  {
-    id: 7,
-    name: "Stol 7",
-    type: "Oilaviy",
-    capacity: 8,
-    status: "available",
-    price: 80000,
-  },
-  {
-    id: 8,
-    name: "Stol 8",
-    type: "Oddiy",
-    capacity: 4,
-    status: "available",
-    price: 40000,
-  },
-  {
-    id: 9,
-    name: "Stol 9",
-    type: "VIP",
-    capacity: 10,
-    status: "reserved",
-    price: 150000,
-  },
-  {
-    id: 10,
-    name: "Stol 10",
-    type: "Premium",
-    capacity: 4,
-    status: "available",
-    price: 90000,
-  },
-  {
-    id: 11,
-    name: "Stol 11",
-    type: "Oddiy",
-    capacity: 1,
-    status: "available",
-    price: 10000,
-  },
-  {
-    id: 12,
-    name: "Stol 12",
-    type: "Premium",
-    capacity: 8,
-    status: "available",
-    price: 140000,
-  },
-];
+  ["Oddiy", 2, "left"],
+  ["Oilaviy", 6, "center"],
+  ["VIP", 8, "right"],
+  ["Oilaviy", 6, "left"],
+  ["Oddiy", 2, "center"],
+  ["Premium", 10, "right"],
+  ["Oilaviy", 8, "left"],
+  ["Oddiy", 4, "center"],
+  ["VIP", 12, "right"],
+  ["Premium", 10, "left"],
+  ["Oddiy", 4, "center"],
+  ["Premium", 10, "right"],
+].map(([type, capacity, position], index) => ({
+  id: index + 1,
+  name: `Stol ${index + 1}`,
+  type,
+  capacity,
+  position,
+  status: [2, 5, 9].includes(index + 1) ? "reserved" : "available",
+}));
 
-const categories = [
-  "Barchasi",
-  "Milliy taomlar",
-  "Kaboblar",
-  "Salatlar",
-];
+const categories = ["Barchasi", "Milliy taomlar", "Kaboblar", "Salatlar"];
+const today = new Date().toISOString().split("T")[0];
+const emptyBooking = { name: "", phone: "", date: "", time: "", comment: "" };
 
-const tableTypes = [
-  "Barchasi",
-  "Oddiy",
-  "Oilaviy",
-  "VIP",
-  "Premium",
-];
-
-function formatPrice(price) {
-  return new Intl.NumberFormat("uz-UZ").format(price) + " so‘m";
-}
-
-function App() {
+export default function App() {
   const [category, setCategory] = useState("Barchasi");
-
   const [bookingOpen, setBookingOpen] = useState(false);
-  const [selectedTable, setSelectedTable] = useState(null);
   const [step, setStep] = useState(1);
+  const [selectedTable, setSelectedTable] = useState(null);
+  const [guestCount, setGuestCount] = useState("Barcha sig‘imlar");
+  const [tableType, setTableType] = useState("Barchasi");
+  const [booking, setBooking] = useState(emptyBooking);
   const [success, setSuccess] = useState(false);
 
-  const [capacityFilter, setCapacityFilter] = useState("Barchasi");
-  const [typeFilter, setTypeFilter] = useState("Barchasi");
+  const filteredItems = useMemo(
+    () =>
+      category === "Barchasi"
+        ? menuItems
+        : menuItems.filter((item) => item.category === category),
+    [category]
+  );
 
-  const [form, setForm] = useState({
-    name: "",
-    phone: "",
-    date: "",
-    time: "",
-    guests: "2",
-    comment: "",
-  });
+  const filteredTables = useMemo(
+    () =>
+      tables.filter((table) => {
+        const capacityMatch =
+          guestCount === "Barcha sig‘imlar" ||
+          table.capacity >= Number(guestCount);
 
-  const filteredItems =
-    category === "Barchasi"
-      ? menuItems
-      : menuItems.filter((item) => item.category === category);
+        const typeMatch =
+          tableType === "Barchasi" || table.type === tableType;
 
-  const filteredTables = tables.filter((table) => {
-    const capacityMatch =
-      capacityFilter === "Barchasi" ||
-      table.capacity === Number(capacityFilter);
+        return capacityMatch && typeMatch;
+      }),
+    [guestCount, tableType]
+  );
 
-    const typeMatch =
-      typeFilter === "Barchasi" || table.type === typeFilter;
-
-    return capacityMatch && typeMatch;
-  });
-
-  function openBooking() {
+  const openBooking = () => {
     setBookingOpen(true);
-    setSelectedTable(null);
     setStep(1);
     setSuccess(false);
-  }
+  };
 
-  function closeBooking() {
+  const closeBooking = () => {
     setBookingOpen(false);
     setSelectedTable(null);
     setStep(1);
     setSuccess(false);
-  }
+    setGuestCount("Barcha sig‘imlar");
+    setTableType("Barchasi");
+    setBooking(emptyBooking);
+  };
 
-  function changeForm(event) {
-    setForm({
-      ...form,
-      [event.target.name]: event.target.value,
-    });
-  }
+  const changeBooking = ({ target: { name, value } }) => {
+    setBooking((old) => ({ ...old, [name]: value }));
+  };
 
-  function nextStep(event) {
+  const submitBooking = (event) => {
     event.preventDefault();
 
-    if (!form.name || !form.phone || !form.date || !form.time) {
+    if (!selectedTable) {
+      alert("Avval stol tanlang.");
+      return;
+    }
+
+    if (!booking.name || !booking.phone || !booking.date || !booking.time) {
       alert("Iltimos, barcha majburiy maydonlarni to‘ldiring.");
       return;
     }
 
-    if (Number(form.guests) > selectedTable.capacity) {
-      alert(
-        `Bu joy ${selectedTable.capacity} kishilik. Mehmonlar sonini kamaytiring.`
-      );
+    if (booking.date < today) {
+      alert("Iltimos, bugungi yoki kelajakdagi sanani tanlang.");
       return;
     }
 
+    const orderData = {
+      name: booking.name,
+      phone: booking.phone,
+      date: booking.date,
+      time: booking.time,
+      comment: booking.comment,
+      table: selectedTable.name,
+      tableType: selectedTable.type,
+      capacity: selectedTable.capacity,
+    };
+
+    const telegram = window.Telegram?.WebApp;
+
+    if (telegram) {
+      telegram.ready();
+      telegram.sendData(JSON.stringify(orderData));
+      telegram.close();
+      return;
+    }
+
+    setSuccess(true);
     setStep(3);
-  }
+  };
 
   return (
     <div className="app">
       <header className="header">
         <div className="container navbar">
           <a href="#home" className="logo">
-            NAVBAHOR<span>.</span>
+            RESTAURANT<span>.</span>
           </a>
 
           <nav className="nav-links">
             <a href="#home">Bosh sahifa</a>
             <a href="#about">Biz haqimizda</a>
             <a href="#menu">Menyu</a>
-            <a href="#booking">Joy band qilish</a>
+            <a href="#contact">Aloqa</a>
           </nav>
 
-          <button className="gold-button" onClick={openBooking}>
-            Joy band qilish
+          <button className="header-button" onClick={openBooking}>
+            Joy bron qilish
           </button>
         </div>
       </header>
 
       <main>
         <section className="hero" id="home">
-          <div className="container hero-content">
-            <p className="eyebrow">NAVBAHOR RESTAURANT</p>
-
-            <h1>
-              Mazali taomlar,
-              <br />
-              <span>yoqimli lahzalar</span>
-            </h1>
-
-            <p className="hero-description">
-              Milliy va zamonaviy taomlarning o‘ziga xos uyg‘unligi.
-              Har bir mehmonimiz uchun unutilmas ta’m.
-            </p>
-
-            <button className="gold-button" onClick={openBooking}>
-              Joy band qilish
-            </button>
+          <div className="hero-overlay">
+            <div className="container hero-content">
+              <p className="eyebrow">RESTAURANT EXPERIENCE</p>
+              <h1>
+                Mazali taomlar,
+                <br />
+                <span>yoqimli lahzalar</span>
+              </h1>
+              <p className="hero-text">
+                Milliy va zamonaviy taomlarning o‘ziga xos uyg‘unligi.
+                Har bir mehmonimiz uchun unutilmas ta’m va qulay muhit.
+              </p>
+              <div className="hero-actions">
+                <a href="#menu" className="primary-button">
+                  Menyuni ko‘rish
+                </a>
+                <button className="secondary-button" onClick={openBooking}>
+                  Joy bron qilish
+                </button>
+              </div>
+            </div>
           </div>
         </section>
 
-        <section className="section" id="about">
-          <div className="container two-columns">
+        <section className="about section" id="about">
+          <div className="container about-grid">
             <div>
               <p className="eyebrow">BIZ HAQIMIZDA</p>
-
               <h2>
                 Har bir taomda
                 <br />
                 <span>mehr va sifat</span>
               </h2>
-
-              <p className="muted">
-                Navbahor — milliy taomlar, qulay muhit va samimiy
-                xizmat uyg‘unlashgan restoran. Biz mehmonlarimizga
-                har kuni yangi va mazali taomlarni taqdim etamiz.
+              <p className="section-text">
+                Restaurant — mazali taomlar, qulay muhit va samimiy xizmat
+                uyg‘unlashgan zamonaviy restoran platformasi.
               </p>
+              <a href="#contact" className="text-link">
+                Biz bilan bog‘lanish →
+              </a>
             </div>
 
-            <div className="info-card">
-              <div className="info-icon">✦</div>
-
-              <h3>Qulay bron qilish</h3>
-
+            <div className="about-card">
+              <div className="about-card-icon">✦</div>
+              <h3>Yuqori sifat</h3>
               <p>
-                Restoranga kelishdan oldin o‘zingizga mos stolni
-                tanlang va joyingizni oldindan band qiling.
+                Faqat yangi va sifatli mahsulotlardan foydalanishga e’tibor
+                qaratamiz.
               </p>
             </div>
           </div>
         </section>
 
-        <section className="section menu-section" id="menu">
+        <section className="menu section" id="menu">
           <div className="container">
             <div className="section-heading">
               <p className="eyebrow">MAZALI TANLOV</p>
-
               <h2>
                 Bizning <span>menyu</span>
               </h2>
-
-              <p className="muted">
-                Taomlarimiz bilan oldindan tanishib chiqing.
+              <p className="section-text">
+                O‘zingizga yoqqan taomni tanlang.
               </p>
             </div>
 
-            <div className="categories">
+            <div className="category-buttons">
               {categories.map((item) => (
                 <button
                   key={item}
@@ -349,15 +244,13 @@ function App() {
               {filteredItems.map((item) => (
                 <article className="menu-card" key={item.id}>
                   <div className="food-image">{item.emoji}</div>
-
-                  <div className="card-content">
-                    <small>{item.category}</small>
-
+                  <div className="menu-card-content">
+                    <p className="food-category">{item.category}</p>
                     <h3>{item.name}</h3>
-
                     <p>{item.description}</p>
-
-                    <strong>{formatPrice(item.price)}</strong>
+                    <strong className="food-price">
+                      {new Intl.NumberFormat("uz-UZ").format(item.price)} so‘m
+                    </strong>
                   </div>
                 </article>
               ))}
@@ -365,404 +258,279 @@ function App() {
           </div>
         </section>
 
-        <section className="section booking-promo" id="booking">
-          <div className="container two-columns">
+        <section className="booking-section section">
+          <div className="container booking-banner">
             <div>
-              <p className="eyebrow">OLDINDAN BAND QILING</p>
-
+              <p className="eyebrow">OLDINDAN JOY TANLANG</p>
               <h2>
-                O‘zingizga qulay
+                Restoranda o‘zingizga
                 <br />
-                <span>stolni tanlang</span>
+                <span>mos joyni band qiling</span>
               </h2>
-
-              <p className="muted">
-                Restoran xaritasidan bo‘sh joyni tanlang.
-                Oddiy, oilaviy, VIP va premium joylar mavjud.
+              <p>
+                Oddiy, oilaviy, VIP va Premium joylardan birini tanlang.
               </p>
             </div>
 
-            <div className="promo-action">
-              <button className="gold-button" onClick={openBooking}>
-                Restoran xaritasini ochish
-              </button>
+            <button className="primary-button" onClick={openBooking}>
+              Restoran xaritasini ochish
+            </button>
+          </div>
+        </section>
+
+        <section className="contact section" id="contact">
+          <div className="container contact-box">
+            <div>
+              <p className="eyebrow">ALOQA</p>
+              <h2>Biz sizni kutamiz</h2>
+              <p>
+                Mazali taomlar va yoqimli muhit uchun restoranimizga tashrif
+                buyuring.
+              </p>
+            </div>
+
+            <div className="contact-info">
+              <p>📍 Sizning shahringiz</p>
+              <p>📞 +998 90 000 00 00</p>
+              <p>🕒 Har kuni 09:00–22:00</p>
             </div>
           </div>
         </section>
       </main>
 
-      <footer>
-        © 2026 Navbahor Restaurant. Barcha huquqlar himoyalangan.
+      <footer className="footer">
+        <div className="container">
+          <p>© 2026 Restaurant. Barcha huquqlar himoyalangan.</p>
+        </div>
       </footer>
 
       {bookingOpen && (
-        <div className="overlay" onClick={closeBooking}>
+        <div className="modal-overlay" onClick={closeBooking}>
           <div
-            className="modal"
+            className="booking-modal"
             onClick={(event) => event.stopPropagation()}
           >
-            <button className="close-button" onClick={closeBooking}>
+            <button className="modal-close" onClick={closeBooking}>
               ×
             </button>
 
-            {success ? (
-              <div className="success">
+            <div className="booking-steps">
+              <span className={step >= 1 ? "active" : ""}>1. Stol</span>
+              <span className={step >= 2 ? "active" : ""}>2. Ma’lumot</span>
+              <span className={step >= 3 ? "active" : ""}>3. Yakun</span>
+            </div>
+
+            {step === 1 && (
+              <>
+                <div className="modal-heading">
+                  <p className="eyebrow">JOY TANLASH</p>
+                  <h2>Restoran xaritasi</h2>
+                  <p>O‘zingizga mos joyni filtr orqali tanlang.</p>
+                </div>
+
+                <div className="booking-filters">
+                  <label>
+                    Mehmonlar soni
+                    <select
+                      value={guestCount}
+                      onChange={(event) => {
+                        setGuestCount(event.target.value);
+                        setSelectedTable(null);
+                      }}
+                    >
+                      <option value="Barcha sig‘imlar">
+                        Barcha sig‘imlar
+                      </option>
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12].map((count) => (
+                        <option value={count} key={count}>
+                          {count} kishilik
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+
+                  <label>
+                    Joy turi
+                    <select
+                      value={tableType}
+                      onChange={(event) => {
+                        setTableType(event.target.value);
+                        setSelectedTable(null);
+                      }}
+                    >
+                      {["Barchasi", "Oddiy", "Oilaviy", "VIP", "Premium"].map(
+                        (type) => (
+                          <option key={type}>{type}</option>
+                        )
+                      )}
+                    </select>
+                  </label>
+                </div>
+
+                <div className="map-legend">
+                  <span>🟢 Bo‘sh</span>
+                  <span>🔴 Band</span>
+                  <span>🟡 Tanlangan</span>
+                </div>
+
+                <div className="restaurant-map">
+                  <div className="entrance">KIRISH</div>
+
+                  <div className="tables-grid">
+                    {filteredTables.map((table) => (
+                      <button
+                        key={table.id}
+                        disabled={table.status === "reserved"}
+                        className={`table-card ${
+                          table.status === "reserved" ? "reserved" : ""
+                        } ${
+                          selectedTable?.id === table.id ? "selected" : ""
+                        }`}
+                        onClick={() => setSelectedTable(table)}
+                      >
+                        <strong>{table.name}</strong>
+                        <small>{table.type} joy</small>
+                        <small>{table.capacity} kishilik</small>
+                        <b>
+                          {table.status === "reserved"
+                            ? "Band"
+                            : selectedTable?.id === table.id
+                            ? "Tanlandi"
+                            : "Bo‘sh"}
+                        </b>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {selectedTable && (
+                  <div className="selected-table-info">
+                    <h3>{selectedTable.name}</h3>
+                    <p>
+                      Joy turi: <strong>{selectedTable.type}</strong>
+                    </p>
+                    <p>
+                      Sig‘imi: <strong>{selectedTable.capacity} kishi</strong>
+                    </p>
+                    <p className="booking-price">
+                      Bron qilish to‘lovi: <strong>20,000 so‘m</strong>
+                    </p>
+                    <button
+                      className="primary-button"
+                      onClick={() => setStep(2)}
+                    >
+                      Shu joyni tanlash
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
+
+            {step === 2 && (
+              <form className="booking-form" onSubmit={submitBooking}>
+                <div className="modal-heading">
+                  <p className="eyebrow">MA’LUMOTLAR</p>
+                  <h2>Bron qilish</h2>
+                  <p>
+                    Tanlangan joy: <strong>{selectedTable?.name}</strong>
+                  </p>
+                </div>
+
+                <label>
+                  Ismingiz *
+                  <input
+                    required
+                    name="name"
+                    value={booking.name}
+                    onChange={changeBooking}
+                    placeholder="Ismingizni kiriting"
+                  />
+                </label>
+
+                <label>
+                  Telefon raqamingiz *
+                  <input
+                    required
+                    name="phone"
+                    value={booking.phone}
+                    onChange={changeBooking}
+                    placeholder="+998 90 000 00 00"
+                  />
+                </label>
+
+                <div className="form-row">
+                  <label>
+                    Sana *
+                    <input
+                      required
+                      min={today}
+                      type="date"
+                      name="date"
+                      value={booking.date}
+                      onChange={changeBooking}
+                    />
+                  </label>
+
+                  <label>
+                    Vaqt *
+                    <input
+                      required
+                      type="time"
+                      name="time"
+                      value={booking.time}
+                      onChange={changeBooking}
+                    />
+                  </label>
+                </div>
+
+                <label>
+                  Qo‘shimcha izoh
+                  <textarea
+                    name="comment"
+                    value={booking.comment}
+                    onChange={changeBooking}
+                    placeholder="Qo‘shimcha istaklaringiz..."
+                  />
+                </label>
+
+                <div className="booking-form-actions">
+                  <button
+                    type="button"
+                    className="secondary-button"
+                    onClick={() => setStep(1)}
+                  >
+                    Ortga
+                  </button>
+                  <button className="primary-button">Bronni tasdiqlash</button>
+                </div>
+              </form>
+            )}
+
+            {step === 3 && success && (
+              <div className="success-screen">
                 <div className="success-icon">✓</div>
-
-                <h2>Joyingiz band qilindi!</h2>
-
+                <h2>Bron so‘rovi tayyor!</h2>
                 <p>
-                  Rahmat, {form.name}. Demo bron muvaffaqiyatli
-                  yakunlandi.
+                  {selectedTable?.name} uchun bron ma’lumotlaringiz qabul
+                  qilindi.
                 </p>
 
-                <button className="gold-button" onClick={closeBooking}>
+                <div className="success-details">
+                  <p><strong>Ism:</strong> {booking.name}</p>
+                  <p><strong>Telefon:</strong> {booking.phone}</p>
+                  <p><strong>Sana:</strong> {booking.date}</p>
+                  <p><strong>Vaqt:</strong> {booking.time}</p>
+                </div>
+
+                <p className="demo-warning">
+                  Bu hozircha demo rejim. API ulangandan keyin ma’lumotlar
+                  administratorga yuboriladi.
+                </p>
+
+                <button className="primary-button" onClick={closeBooking}>
                   Yopish
                 </button>
               </div>
-            ) : (
-              <>
-                <div className="steps">
-                  <span className={step >= 1 ? "current" : ""}>
-                    1. Stol
-                  </span>
-
-                  <span className={step >= 2 ? "current" : ""}>
-                    2. Ma’lumot
-                  </span>
-
-                  <span className={step >= 3 ? "current" : ""}>
-                    3. To‘lov
-                  </span>
-                </div>
-
-                {step === 1 && (
-                  <>
-                    <h2>Restoran xaritasi</h2>
-
-                    <p className="muted">
-                      O‘zingizga mos joyni filtr orqali tanlang.
-                    </p>
-
-                    <div className="filter-panel">
-                      <div className="filter-group">
-                        <label>Mehmonlar soni</label>
-
-                        <select
-                          value={capacityFilter}
-                          onChange={(event) =>
-                            setCapacityFilter(event.target.value)
-                          }
-                        >
-                          <option value="Barchasi">
-                            Barcha sig‘imlar
-                          </option>
-
-                          {Array.from(
-                            { length: 10 },
-                            (_, index) => index + 1
-                          ).map((number) => (
-                            <option key={number} value={number}>
-                              {number} kishilik
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-
-                      <div className="filter-group">
-                        <label>Joy turi</label>
-
-                        <select
-                          value={typeFilter}
-                          onChange={(event) =>
-                            setTypeFilter(event.target.value)
-                          }
-                        >
-                          {tableTypes.map((type) => (
-                            <option key={type} value={type}>
-                              {type}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-
-                    <div className="map-legend">
-                      <span>
-                        <i className="legend available-color"></i>
-                        Bo‘sh
-                      </span>
-
-                      <span>
-                        <i className="legend reserved-color"></i>
-                        Band
-                      </span>
-
-                      <span>
-                        <i className="legend selected-color"></i>
-                        Tanlangan
-                      </span>
-                    </div>
-
-                    <div className="map">
-                      <div className="entrance">KIRISH</div>
-
-                      {filteredTables.length === 0 ? (
-                        <div className="no-tables">
-                          Bu filtr bo‘yicha joy topilmadi.
-                        </div>
-                      ) : (
-                        <div className="table-grid">
-                          {filteredTables.map((table) => (
-                            <button
-                              key={table.id}
-                              disabled={table.status === "reserved"}
-                              className={`table ${
-                                table.status === "reserved"
-                                  ? "reserved"
-                                  : ""
-                              } ${
-                                selectedTable?.id === table.id
-                                  ? "selected"
-                                  : ""
-                              }`}
-                              onClick={() => setSelectedTable(table)}
-                            >
-                              <span className="table-number">
-                                {String(table.id).padStart(2, "0")}
-                              </span>
-
-                              <b>{table.name}</b>
-
-                              <small>{table.type} joy</small>
-
-                              <small>{table.capacity} kishilik</small>
-
-                              <strong>
-                                {table.status === "reserved"
-                                  ? "Band"
-                                  : "Bo‘sh"}
-                              </strong>
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-
-                    {selectedTable && (
-                      <div className="selected-info">
-                        <div className="selected-header">
-                          <div>
-                            <p className="eyebrow">TANLANGAN JOY</p>
-
-                            <h3>{selectedTable.name}</h3>
-                          </div>
-
-                          <span className="selected-badge">
-                            {selectedTable.type}
-                          </span>
-                        </div>
-
-                        <div className="selected-details">
-                          <p>
-                            <b>Joy turi:</b> {selectedTable.type}
-                          </p>
-
-                          <p>
-                            <b>Sig‘imi:</b> {selectedTable.capacity} kishi
-                          </p>
-
-                          <p>
-                            <b>Holati:</b>{" "}
-                            <span className="available-text">
-                              Bo‘sh
-                            </span>
-                          </p>
-                        </div>
-
-                        <div className="image-placeholder">
-                          🖼️ Bu joyning rasmi mavjud
-                        </div>
-
-                        <div className="booking-price">
-                          <span>Band qilish to‘lovi</span>
-
-                          <b>{formatPrice(selectedTable.price)}</b>
-                        </div>
-
-                        <button
-                          className="gold-button"
-                          onClick={() => setStep(2)}
-                        >
-                          Shu joyni tanlash
-                        </button>
-                      </div>
-                    )}
-                  </>
-                )}
-
-                {step === 2 && (
-                  <>
-                    <h2>Ma’lumotlaringiz</h2>
-
-                    <p className="muted">
-                      {selectedTable.name} — {selectedTable.type},{" "}
-                      {selectedTable.capacity} kishilik.
-                    </p>
-
-                    <form onSubmit={nextStep}>
-                      <label>
-                        Ismingiz
-
-                        <input
-                          name="name"
-                          value={form.name}
-                          onChange={changeForm}
-                          placeholder="Ismingiz"
-                        />
-                      </label>
-
-                      <label>
-                        Telefon raqamingiz
-
-                        <input
-                          name="phone"
-                          value={form.phone}
-                          onChange={changeForm}
-                          placeholder="+998 90 000 00 00"
-                        />
-                      </label>
-
-                      <div className="form-row">
-                        <label>
-                          Sana
-
-                          <input
-                            type="date"
-                            name="date"
-                            value={form.date}
-                            onChange={changeForm}
-                          />
-                        </label>
-
-                        <label>
-                          Vaqt
-
-                          <input
-                            type="time"
-                            name="time"
-                            value={form.time}
-                            onChange={changeForm}
-                          />
-                        </label>
-                      </div>
-
-                      <label>
-                        Mehmonlar soni
-
-                        <select
-                          name="guests"
-                          value={form.guests}
-                          onChange={changeForm}
-                        >
-                          {Array.from(
-                            { length: selectedTable.capacity },
-                            (_, index) => index + 1
-                          ).map((number) => (
-                            <option key={number} value={number}>
-                              {number} kishi
-                            </option>
-                          ))}
-                        </select>
-                      </label>
-
-                      <label>
-                        Qo‘shimcha izoh
-
-                        <textarea
-                          name="comment"
-                          value={form.comment}
-                          onChange={changeForm}
-                          placeholder="Masalan: deraza yonidagi joy kerak"
-                        ></textarea>
-                      </label>
-
-                      <div className="actions">
-                        <button
-                          type="button"
-                          className="back-button"
-                          onClick={() => setStep(1)}
-                        >
-                          Orqaga
-                        </button>
-
-                        <button className="gold-button">
-                          To‘lovga o‘tish
-                        </button>
-                      </div>
-                    </form>
-                  </>
-                )}
-
-                {step === 3 && (
-                  <>
-                    <h2>Demo to‘lov</h2>
-
-                    <p className="muted">
-                      Hozircha haqiqiy pul yechilmaydi. Keyinchalik
-                      Click yoki Payme ulanadi.
-                    </p>
-
-                    <div className="summary">
-                      <p>
-                        Stol: <b>{selectedTable.name}</b>
-                      </p>
-
-                      <p>
-                        Turi: <b>{selectedTable.type}</b>
-                      </p>
-
-                      <p>
-                        Sana: <b>{form.date}</b>
-                      </p>
-
-                      <p>
-                        Vaqt: <b>{form.time}</b>
-                      </p>
-
-                      <p>
-                        Mehmonlar: <b>{form.guests} kishi</b>
-                      </p>
-
-                      <p>
-                        Jami:{" "}
-                        <b>{formatPrice(selectedTable.price)}</b>
-                      </p>
-                    </div>
-
-                    <input
-                      className="demo-card-input"
-                      placeholder="Karta raqami — demo"
-                    />
-
-                    <div className="actions">
-                      <button
-                        className="back-button"
-                        onClick={() => setStep(2)}
-                      >
-                        Orqaga
-                      </button>
-
-                      <button
-                        className="gold-button"
-                        onClick={() => setSuccess(true)}
-                      >
-                        To‘lovni tasdiqlash
-                      </button>
-                    </div>
-                  </>
-                )}
-              </>
             )}
           </div>
         </div>
@@ -770,5 +538,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
